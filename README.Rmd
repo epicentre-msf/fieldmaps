@@ -18,36 +18,101 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of fieldmaps is to ...
+`{fieldmaps}` provides an R interface to [fieldmaps](https://fieldmaps.io), a humanitarian geospatial data platform that delivers standardized, edge-matched administrative boundaries for countries worldwide. The package enables easy access to high-quality reference data designed for humanitarian and development work, especially in challenging environments with limited connectivity or variable data quality.
+
+## About Fieldmaps
+
+Fieldmaps consolidates authoritative geospatial data from multiple sources into a living, practical database:
+
+- **Data sources**: OpenStreetMap baseline enhanced with UN OCHA Common Operational Datasets (COD), national authoritative sources, and geoBoundaries
+- **Edge-matched boundaries**: Globally consistent administrative boundaries that eliminate gaps and overlaps
+- **Two datasets**:
+  - `humanitarian`: UN OCHA COD data prioritizing validated humanitarian datasets
+  - `open`: geoBoundaries data providing comprehensive global coverage
+- **Multiple geometry types**: Polygons, lines, and points for flexible mapping needs
+
+The platform specifically targets humanitarian field workers operating under resource constraints, making geographic data accessible even in low-bandwidth environments.
 
 ## Installation
 
-You can install the development version of fieldmaps like so:
+You can install the development version of  like so:
 
 ``` r
-pak::pak("epicentre-msf/fieldmaps")
+pak::pak("epicentre-msf/")
 ```
+
+## Features
+
+- **Simple API**: Two main functions for downloading administrative boundaries
+- **Flexible country input**: Accepts country names or ISO3 codes (e.g., "Kenya" or "KEN")
+- **Multiple admin levels**: Access levels 1-4 depending on data availability
+- **Dataset choice**: Select between humanitarian (COD) or open (geoBoundaries) datasets
+- **Geometry options**: Download polygons, lines, or points
+- **Efficient data access**: Leverages DuckDB to query remote Parquet files without full downloads
+- **Automatic validation**: Built-in country code conversion and level checking
+- **SF integration**: Returns standard `sf` objects ready for spatial analysis
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+### Download a single administrative level
 
-```{r example}
+```{r example, fig.width=8, fig.height=6}
 library(fieldmaps)
-library(sf)
 
-country <- "Niger"
+# Download admin level 1 boundaries
+adm1 <- get_adm_level("Niger", level = 1)
 
-# downlaod single admin level
-adm1 <- get_adm_level(country, level = 1)
+# features provided by 
+dplyr::glimpse(adm1)
 
-# print
-adm1
-
-# download all available admin levels
-shps <- get_all_adm_levels(country)
-
-# print
-shps
+# plot the boundaries
+plot(adm1$geometry)
 ```
+
+### Download all available administrative levels
+
+```{r eval=FALSE}
+# Download all available admin levels for a country
+shps <- get_all_adm_levels("NER") # use country name or ISO3 code
+
+# Access individual levels
+shps$ADM1  # Level 1 boundaries
+shps$ADM2  # Level 2 boundaries
+shps$ADM3  # Level 3 boundaries
+```
+
+### Use different datasets and geometry types
+
+```{r eval=FALSE}
+# Get boundaries from the open dataset (geoBoundaries)
+adm1_open <- get_adm_level("Uganda", level = 1, dataset = "open")
+
+# Get line geometry instead of polygons
+adm1_lines <- get_adm_level("Somalia", level = 1, geom = "lines")
+
+# Get point geometry (administrative centers)
+adm1_points <- get_adm_level("Ethiopia", level = 1, geom = "points")
+```
+
+## Technical Details
+
+**** uses [DuckDB](https://duckdb.org/) to efficiently query remote Parquet files hosted by  without downloading entire datasets. Data is then converted into R `sf` objects efficiently via geoarrow.
+
+This approach minimizes bandwidth requirements and provides fast access to boundaries, making it suitable for use in low-connectivity environments.
+
+## Data Attribution
+
+All data accessed through this package comes from [Fieldmaps](https://.io) and includes:
+
+- **Humanitarian dataset**: UN OCHA Common Operational Datasets (COD)
+- **Open dataset**: geoBoundaries data
+- Underlying data from OpenStreetMap, national mapping agencies, and other authoritative sources
+
+Please refer to the `src_name`, `src_url`, and `src_lic` fields in the returned data for specific attribution and licensing information for each country.
+
+## Related Packages
+
+- [rgeoboundaries](https://github.com/dickoa/rgeoboundaries) - Access geoBoundaries data directly
+- [rnaturalearth](https://github.com/ropensci/rnaturalearth) - Natural Earth map data
+- [osmdata](https://github.com/ropensci/osmdata) - OpenStreetMap data access
 
