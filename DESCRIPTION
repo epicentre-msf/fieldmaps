@@ -20,3 +20,5 @@ Imports:
     glue,
     rlang,
     sf
+URL: https://github.com/epicentre-msf/fieldmaps
+BugReports: https://github.com/epicentre-msf/fieldmaps/issues
