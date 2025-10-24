@@ -1,0 +1,50 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# fieldmaps
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of fieldmaps is to ...
+
+## Installation
+
+You can install the development version of fieldmaps like so:
+
+``` r
+# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(fieldmaps)
+pkgload::load_all()
+
+country <- "Niger"
+
+# downlaod single admin level
+adm1 <- get_adm_level(country, level = 1)
+
+# download all available admin levels
+shps <- get_all_adm_levels(country)
+
+# visualize
+mapview::mapview(shps)
+```
+
