@@ -28,7 +28,7 @@ Each sf object contains administrative boundaries for that level with CRS 4326 (
 }
 \description{
 Downloads all available administrative boundary levels for a country from
-the Field Maps dataset. This function automatically determines the maximum
+the fieldmaps dataset. This function automatically determines the maximum
 administrative level available and retrieves all levels from 1 to the maximum.
 }
 \examples{

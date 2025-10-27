@@ -1,7 +1,7 @@
 #' Get Administrative Boundaries for a Specific Level
 #'
 #' Downloads administrative boundary data for a specific administrative level
-#' from the Field Maps dataset. Field Maps provides standardized administrative
+#' from the fieldmaps dataset. Fieldmaps provides standardized administrative
 #' boundaries for humanitarian and development use cases.
 #'
 #' @param country Character. Country name or ISO3 code to download boundaries for.
@@ -56,14 +56,18 @@ get_adm_level <- function(country, level, con = NULL, dataset = "humanitarian", 
 
   # Check requested admin level exists
   if (check_max_level) {
-    max_level <- get_max_level(iso3, dataset, con)
-    if (level > max_level) {
-      cli::cli_abort("Requested admin level {level} not found. Field Maps has only {max_level} levels for country {iso3}.")
+    level_max <- get_max_level(iso3, dataset, con)
+    if (level > level_max) {
+      cli::cli_abort(c(
+        "x" = "ADM{level} data not available",
+        "i" = "Fieldmaps has only {level_max} levels for {.field {country}}"
+      ))
     }
   }
 
   # Build and execute query
   requireNamespace("geoarrow", quietly = TRUE) # ensure geoarrow is loaded for st_as_sf to work
+  cli::cli_progress_step("Downloading ADM{level} {geom}")
   query <- field_maps_qry(iso3, level, con, dataset, geom)
   dplyr::tbl(con, dplyr::sql(query)) |>
     arrow::to_arrow() |>
@@ -73,7 +77,7 @@ get_adm_level <- function(country, level, con = NULL, dataset = "humanitarian", 
 #' Get All Available Administrative Levels for a Country
 #'
 #' Downloads all available administrative boundary levels for a country from
-#' the Field Maps dataset. This function automatically determines the maximum
+#' the fieldmaps dataset. This function automatically determines the maximum
 #' administrative level available and retrieves all levels from 1 to the maximum.
 #'
 #' @inheritParams get_adm_level
@@ -114,7 +118,7 @@ get_all_adm_levels <- function(country, dataset = "humanitarian", geom = "polygo
 
   # Get max admin level for country
   level_max <- get_max_level(iso3, dataset, con)
-  cli::cli_alert_info("Requesting {level_max} {iso3} admin levels available in Field Maps.")
+  cli::cli_alert_info("{.field {level_max} {country}} admin levels found in fieldmaps")
   levels <- 1:level_max
 
   # Use the single layer function with the shared connection
@@ -123,6 +127,6 @@ get_all_adm_levels <- function(country, dataset = "humanitarian", geom = "polygo
     function(level) get_adm_level(iso3, level, con, dataset, geom, check_max_level = FALSE)
   )
   names(shps) <- paste0("ADM", levels)
-
+  cli::cli_alert_success("All downloads complete")
   shps
 }

@@ -24,18 +24,17 @@ knitr::opts_chunk$set(
 
 Fieldmaps consolidates authoritative geospatial data from multiple sources into a living, practical database:
 
-- **Data sources**: OpenStreetMap baseline enhanced with UN OCHA Common Operational Datasets (COD), national authoritative sources, and geoBoundaries
-- **Edge-matched boundaries**: Globally consistent administrative boundaries that eliminate gaps and overlaps
+- **Edge-matched boundaries**: Globally consistent administrative boundaries that eliminate gaps and overlaps. Uses the OpenStreetMap International ADM0 worldview for edge-matching
 - **Two datasets**:
-  - [`humanitarian`]((https://fieldmaps.io/data/cod)): UN OCHA COD data prioritizing validated humanitarian datasets
-  - [`open`](https://fieldmaps.io/data/geoboundaries): geoBoundaries data providing comprehensive global coverage
+  - [`humanitarian`](https://fieldmaps.io/data/cod): UN OCHA Common Operational Datasets (COD) data prioritizing validated humanitarian datasets. Falls back to geoBoundaries for regions without coverage
+  - [`open`](https://fieldmaps.io/data/geoboundaries): geoBoundaries data providing comprehensive global coverage. Suitable for academic or commercial use. 
 - **Multiple geometry types**: Polygons, lines, and points for flexible mapping needs
 
 The platform specifically targets humanitarian field workers operating under resource constraints, making geographic data accessible even in low-bandwidth environments.
 
 ## Installation
 
-You can install the development version of  like so:
+You can install the development version of fieldmaps via the `{pak}` package:
 
 ``` r
 pak::pak("epicentre-msf/fieldmaps")
@@ -61,10 +60,10 @@ library(fieldmaps)
 # Download admin level 1 boundaries
 adm1 <- get_adm_level("Niger", level = 1)
 
-# features provided by 
+# features returned by fieldmaps
 dplyr::glimpse(adm1)
 
-# plot the boundaries
+# plot the sf geometry
 plot(adm1$geometry)
 ```
 
@@ -94,19 +93,20 @@ adm1_points <- get_adm_level("Ethiopia", level = 1, geom = "points")
 ```
 
 ### Error handling
-if you missplell a country name, provide an invalid ISO3 code or request a level that is not available, the package will return an informative error message:
+
+if you misspell a country name, provide an invalid ISO3 code or request a level that is not available, the package will return an informative error message:
 
 ```{r error=TRUE}
 get_adm_level("typo")
 ```
 
 ```{r error=TRUE}
-get_adm_level("NER", level = 4)
+get_adm_level("Niger", level = 4)
 ```
 
 ## Technical Details
 
-`{fieldmaps}` uses [DuckDB](https://duckdb.org/) to efficiently query remote Parquet files hosted by fieldmaps without downloading entire datasets. Data is then converted into [{`sf`}](https://r-spatial.github.io/sf/) objects efficiently via the [`{geoarrow}`](https://geoarrow.org/geoarrow-r/) R implementation.
+`{fieldmaps}` uses [DuckDB](https://duckdb.org/) to efficiently query remote Parquet files hosted by fieldmaps without downloading entire datasets. Data is then converted into [`{sf}`](https://r-spatial.github.io/sf/) objects via the [`{geoarrow}`](https://geoarrow.org/geoarrow-r/) R implementation.
 
 This approach minimizes bandwidth requirements and provides fast access to boundaries, making it suitable for use in low-connectivity environments.
 
@@ -119,6 +119,10 @@ All data accessed through this package comes from [fieldmaps](https://fieldmaps.
 - Underlying data from OpenStreetMap, national mapping agencies, and other authoritative sources
 
 Please refer to the `src_name`, `src_url`, and `src_lic` fields in the returned data for specific attribution and licensing information for each country.
+
+## Acknowledgements
+
+This R package is a simple interface to the fieldmaps data platform. Many thanks to the fieldmaps maintainer [Max Malynowsky and project contributors](https://fieldmaps.io/about).
 
 ## Related R Packages
 

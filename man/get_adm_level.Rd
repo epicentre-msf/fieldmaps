@@ -36,7 +36,7 @@ An sf object containing the administrative boundaries with CRS 4326 (WGS84).
 }
 \description{
 Downloads administrative boundary data for a specific administrative level
-from the Field Maps dataset. Field Maps provides standardized administrative
+from the fieldmaps dataset. Fieldmaps provides standardized administrative
 boundaries for humanitarian and development use cases.
 }
 \examples{

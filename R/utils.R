@@ -20,6 +20,7 @@ load_extensions <- function(con) {
   DBI::dbExecute(con, "INSTALL httpfs")
   DBI::dbExecute(con, "LOAD httpfs")
   DBI::dbExecute(con, "CALL register_geoarrow_extensions()")
+  DBI::dbExecute(con, "PRAGMA disable_progress_bar") # use cli for progress instead
 }
 
 #' Validate and standardize country input
@@ -60,11 +61,14 @@ validate_country <- function(country) {
   if (!grepl("^[A-Z]{3}$", country)) {
     country <- suppressWarnings(countrycode::countrycode(country, "country.name", "iso3c"))
     if (is.na(country)) {
-      cli::cli_abort(c(
-        "x" = "Country name '{c_raw}' could not be converted to an ISO3 code. Did you spell it correctly?",
-        "i" = "Try supplying the ISO3 code instead.",
-        "i" = "See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 for details."
-      ))
+      cli::cli_abort(
+        c(
+          "x" = "Country name '{.field {c_raw}}' could not be converted to an ISO3 code. Did you spell it correctly?",
+          "i" = "Try supplying the ISO3 code instead.",
+          "i" = "See {.url https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3} for details."
+        ),
+        call = rlang::caller_env()
+      )
     }
   }
   return(country)
@@ -91,7 +95,7 @@ validate_country <- function(country) {
 #' @keywords internal
 get_max_level <- function(iso3, dataset, con) {
   csv_name <- switch(dataset, humanitarian = "cod", open = "geoboundaries")
-  DBI::dbGetQuery(
+  n <- DBI::dbGetQuery(
     con,
     glue::glue_sql(
       "SELECT src_lvl as n
@@ -100,6 +104,17 @@ get_max_level <- function(iso3, dataset, con) {
       .con = con
     )
   )$n
+  if (length(n) == 0 || is.na(n) || n < 1) {
+    cli::cli_abort(
+      c(
+        "x" = "No administrative levels found for ISO3 code {.field {iso3}} in the fieldmaps dataset.",
+        "i" = "Check that the ISO3 code provided is correct.",
+        "i" = "See https://fieldmaps.io/data/{csv_name}/ for the full list of countries in the {.emph {dataset}} dataset."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+  return(n)
 }
 
 #' Generate SQL query for administrative boundary data

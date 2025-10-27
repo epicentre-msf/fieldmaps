@@ -148,7 +148,7 @@ adm1_points <- get_adm_level("Ethiopia", level = 1, geom = "points")
 
 ### Error handling
 
-if you missplell a country name, provide an invalid ISO3 code or request
+if you misspell a country name, provide an invalid ISO3 code or request
 a level that is not available, the package will return an informative
 error message:
 
