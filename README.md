@@ -20,16 +20,16 @@ or variable data quality.
 Fieldmaps consolidates authoritative geospatial data from multiple
 sources into a living, practical database:
 
-- **Data sources**: OpenStreetMap baseline enhanced with UN OCHA Common
-  Operational Datasets (COD), national authoritative sources, and
-  geoBoundaries
 - **Edge-matched boundaries**: Globally consistent administrative
-  boundaries that eliminate gaps and overlaps
+  boundaries that eliminate gaps and overlaps. Uses the OpenStreetMap
+  International ADM0 worldview for edge-matching
 - **Two datasets**:
-  - [`humanitarian`]((https://fieldmaps.io/data/cod)): UN OCHA COD data
-    prioritizing validated humanitarian datasets
+  - [`humanitarian`](https://fieldmaps.io/data/cod): UN OCHA Common
+    Operational Datasets (COD) data prioritizing validated humanitarian
+    datasets. Falls back to geoBoundaries for regions without coverage
   - [`open`](https://fieldmaps.io/data/geoboundaries): geoBoundaries
-    data providing comprehensive global coverage
+    data providing comprehensive global coverage. Suitable for academic
+    or commercial use.
 - **Multiple geometry types**: Polygons, lines, and points for flexible
   mapping needs
 
@@ -39,7 +39,8 @@ low-bandwidth environments.
 
 ## Installation
 
-You can install the development version of like so:
+You can install the development version of fieldmaps via the `{pak}`
+package:
 
 ``` r
 pak::pak("epicentre-msf/fieldmaps")
@@ -70,8 +71,9 @@ library(fieldmaps)
 
 # Download admin level 1 boundaries
 adm1 <- get_adm_level("Niger", level = 1)
+#> ℹ Downloading ADM1 polygons[K✔ Downloading ADM1 polygons [8.1s][K
 
-# features provided by 
+# features returned by fieldmaps
 dplyr::glimpse(adm1)
 #> Rows: 8
 #> Columns: 39
@@ -115,7 +117,7 @@ dplyr::glimpse(adm1)
 #> $ wld_notes  <chr> NA, NA, NA, NA, NA, NA, NA, NA
 #> $ geometry   <MULTIPOLYGON [°]> MULTIPOLYGON (((7.000488 15..., MULTIPOLYGON (((12.68944 13…
 
-# plot the boundaries
+# plot the sf geometry
 plot(adm1$geometry)
 ```
 
@@ -154,18 +156,18 @@ error message:
 
 ``` r
 get_adm_level("typo")
-#> Error in `validate_country()`:
-#> ✖ Country name 'typo' could not be converted to an ISO3 code. Did
-#>   you spell it correctly?
+#> Error in `get_adm_level()`:
+#> ✖ Country name 'typo' could not be converted to an ISO3 code. Did you spell it
+#>   correctly?
 #> ℹ Try supplying the ISO3 code instead.
-#> ℹ See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 for details.
+#> ℹ See <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3> for details.
 ```
 
 ``` r
-get_adm_level("NER", level = 4)
+get_adm_level("Niger", level = 4)
 #> Error in `get_adm_level()`:
-#> ! Requested admin level 4 not found. Field Maps has only 3 levels
-#>   for country NER.
+#> ✖ ADM4 data not available
+#> ℹ Fieldmaps has only 3 levels for Niger
 ```
 
 ## Technical Details
@@ -173,7 +175,7 @@ get_adm_level("NER", level = 4)
 `{fieldmaps}` uses [DuckDB](https://duckdb.org/) to efficiently query
 remote Parquet files hosted by fieldmaps without downloading entire
 datasets. Data is then converted into
-[{`sf`}](https://r-spatial.github.io/sf/) objects efficiently via the
+[`{sf}`](https://r-spatial.github.io/sf/) objects via the
 [`{geoarrow}`](https://geoarrow.org/geoarrow-r/) R implementation.
 
 This approach minimizes bandwidth requirements and provides fast access
@@ -195,6 +197,12 @@ All data accessed through this package comes from
 Please refer to the `src_name`, `src_url`, and `src_lic` fields in the
 returned data for specific attribution and licensing information for
 each country.
+
+## Acknowledgements
+
+This R package is a simple interface to the fieldmaps data platform.
+Many thanks to the fieldmaps maintainer [Max Malynowsky and project
+contributors](https://fieldmaps.io/about).
 
 ## Related R Packages
 
