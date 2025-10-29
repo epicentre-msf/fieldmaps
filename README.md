@@ -9,16 +9,16 @@
 
 `{fieldmaps}` provides an R interface to
 [fieldmaps](https://fieldmaps.io), a humanitarian geospatial data
-platform that delivers standardized, edge-matched administrative
+platform that delivers standardised, edge-matched administrative
 boundaries for countries worldwide. The package enables easy access to
-high-quality reference data designed for humanitarian and development
-work, especially in challenging environments with limited connectivity
-or variable data quality.
+high-quality geospatial data for R users, particularly those working in
+humanitarian contexts.
 
 ## About Fieldmaps
 
 Fieldmaps consolidates authoritative geospatial data from multiple
-sources into a living, practical database:
+sources into a living, practical and standardised database. Key features
+include:
 
 - **Edge-matched boundaries**: Globally consistent administrative
   boundaries that eliminate gaps and overlaps. Uses the OpenStreetMap
@@ -33,16 +33,22 @@ sources into a living, practical database:
 - **Multiple geometry types**: Polygons, lines, and points for flexible
   mapping needs
 
-The platform specifically targets humanitarian field workers operating
-under resource constraints, making geographic data accessible even in
-low-bandwidth environments.
-
 ## Installation
 
-You can install the development version of fieldmaps via the `{pak}`
-package:
+You can install the package from
+[r-universe](https://r-universe.dev/search):
 
 ``` r
+install.packages('fieldmaps', repos = c('https://epicentre-msf.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+Or the development version from github via the `{pak}` package:
+
+``` r
+if (!require("pak", quietly = TRUE)) {
+  # binary build of pak from github repository for your system
+  install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+}
 pak::pak("epicentre-msf/fieldmaps")
 ```
 
@@ -71,7 +77,7 @@ library(fieldmaps)
 
 # Download admin level 1 boundaries
 adm1 <- get_adm_level("Niger", level = 1)
-#> ℹ Downloading ADM1 polygons[K✔ Downloading ADM1 polygons [8.1s][K
+#> ℹ Downloading ADM1 polygons[K✔ Downloading ADM1 polygons [8.3s][K
 
 # features returned by fieldmaps
 dplyr::glimpse(adm1)
@@ -207,7 +213,7 @@ contributors](https://fieldmaps.io/about).
 ## Related R Packages
 
 - [rhdx](https://github.com/dickoa/rhdx) - R client for the Humanitarian
-  Exchange Data platform.
+  Exchange Data platform
 - [rgeoboundaries](https://github.com/dickoa/rgeoboundaries) - Access
   geoBoundaries data directly
 - [rnaturalearth](https://github.com/ropensci/rnaturalearth) - Natural

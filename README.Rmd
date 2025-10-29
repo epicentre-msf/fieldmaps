@@ -18,11 +18,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-`{fieldmaps}` provides an R interface to [fieldmaps](https://fieldmaps.io), a humanitarian geospatial data platform that delivers standardized, edge-matched administrative boundaries for countries worldwide. The package enables easy access to high-quality reference data designed for humanitarian and development work, especially in challenging environments with limited connectivity or variable data quality.
+`{fieldmaps}` provides an R interface to [fieldmaps](https://fieldmaps.io), a humanitarian geospatial data platform that delivers standardised, edge-matched administrative boundaries for countries worldwide. The package enables easy access to high-quality geospatial data for R users, particularly those working in humanitarian contexts.
 
 ## About Fieldmaps
 
-Fieldmaps consolidates authoritative geospatial data from multiple sources into a living, practical database:
+Fieldmaps consolidates authoritative geospatial data from multiple sources into a living, practical and standardised database. Key features include:
 
 - **Edge-matched boundaries**: Globally consistent administrative boundaries that eliminate gaps and overlaps. Uses the OpenStreetMap International ADM0 worldview for edge-matching
 - **Two datasets**:
@@ -30,13 +30,21 @@ Fieldmaps consolidates authoritative geospatial data from multiple sources into 
   - [`open`](https://fieldmaps.io/data/geoboundaries): geoBoundaries data providing comprehensive global coverage. Suitable for academic or commercial use. 
 - **Multiple geometry types**: Polygons, lines, and points for flexible mapping needs
 
-The platform specifically targets humanitarian field workers operating under resource constraints, making geographic data accessible even in low-bandwidth environments.
-
 ## Installation
 
-You can install the development version of fieldmaps via the `{pak}` package:
+You can install the package from [r-universe](https://r-universe.dev/search):
 
 ``` r
+install.packages('fieldmaps', repos = c('https://epicentre-msf.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+Or the development version from github via the `{pak}` package:
+
+``` r
+if (!require("pak", quietly = TRUE)) {
+  # binary build of pak from github repository for your system
+  install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+}
 pak::pak("epicentre-msf/fieldmaps")
 ```
 
@@ -126,7 +134,7 @@ This R package is a simple interface to the fieldmaps data platform. Many thanks
 
 ## Related R Packages
 
-- [rhdx](https://github.com/dickoa/rhdx) - R client for the Humanitarian Exchange Data platform.
+- [rhdx](https://github.com/dickoa/rhdx) - R client for the Humanitarian Exchange Data platform
 - [rgeoboundaries](https://github.com/dickoa/rgeoboundaries) - Access geoBoundaries data directly
 - [rnaturalearth](https://github.com/ropensci/rnaturalearth) - Natural Earth map data
 - [osmdata](https://github.com/ropensci/osmdata) - OpenStreetMap data access
