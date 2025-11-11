@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![R-universe
+version](https://epicentre-msf.r-universe.dev/fieldmaps/badges/version)](https://epicentre-msf.r-universe.dev/fieldmaps)
 <!-- badges: end -->
 
 `{fieldmaps}` provides an R interface to
@@ -77,7 +79,7 @@ library(fieldmaps)
 
 # Download admin level 1 boundaries
 adm1 <- get_adm_level("Niger", level = 1)
-#> ℹ Downloading ADM1 polygons[K✔ Downloading ADM1 polygons [8.3s][K
+#> ℹ Downloading ADM1 polygons[K✔ Downloading ADM1 polygons [6s][K
 
 # features returned by fieldmaps
 dplyr::glimpse(adm1)
@@ -163,8 +165,8 @@ error message:
 ``` r
 get_adm_level("typo")
 #> Error in `get_adm_level()`:
-#> ✖ Country name 'typo' could not be converted to an ISO3 code. Did you spell it
-#>   correctly?
+#> ✖ Country name 'typo' could not be converted to an ISO3 code. Did you
+#>   spell it correctly?
 #> ℹ Try supplying the ISO3 code instead.
 #> ℹ See <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3> for details.
 ```

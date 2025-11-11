@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # fieldmaps
 
 <!-- badges: start -->
+[![R-universe version](https://epicentre-msf.r-universe.dev/fieldmaps/badges/version)](https://epicentre-msf.r-universe.dev/fieldmaps)
 <!-- badges: end -->
 
 `{fieldmaps}` provides an R interface to [fieldmaps](https://fieldmaps.io), a humanitarian geospatial data platform that delivers standardised, edge-matched administrative boundaries for countries worldwide. The package enables easy access to high-quality geospatial data for R users, particularly those working in humanitarian contexts.
