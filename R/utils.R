@@ -19,7 +19,9 @@ load_extensions <- function(con) {
   DBI::dbExecute(con, "LOAD spatial")
   DBI::dbExecute(con, "INSTALL httpfs")
   DBI::dbExecute(con, "LOAD httpfs")
-  DBI::dbExecute(con, "CALL register_geoarrow_extensions()")
+  if (packageVersion("duckdb") < "1.5.0") {
+    dbExecute(con, "CALL register_geoarrow_extensions()")
+  }
   DBI::dbExecute(con, "PRAGMA disable_progress_bar") # use cli for progress instead
 }
 
